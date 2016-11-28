@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!--Import Google Icon Font-->
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!--Import materialize.css-->
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection"/>
+
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <link href="https://fonts.googleapis.com/css?family=Homemade+Apple" rel="stylesheet">
+
+    <style>
+
+        .content {
+            top: 5%;
+            position: absolute;
+            width: 100%;
+        }
+
+        .expand {
+            width: 100%;
+            position: relative;
+        }
+
+        h3 {
+            font-family: 'Homemade Apple', cursive;
+            margin-top: 40px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+<!--Import jQuery before materialize.js-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="js/materialize.min.js"></script>
+
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="col s4 offset-s4 m2 offset-m5">
+                <img src="img/pi.jpg" alt="Raspberry Pi" class="expand"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col s6 m4 offset-s3 offset-m4">
+                <a id="online-a" class="waves-effect waves-light btn tooltipped expand red" data-position="top"
+                   data-delay="50" data-tooltip="Cannot connect to Pi!"><i id="online-i" class="material-icons left">&#xE5CD</i>Offline</a>
+            </div>
+        </div>
+        <div class="row">
+            <h3 class="center-align">Welcome to Lijiahao's Pi!</h3>
+        </div>
+        <div class="row">
+            <div class="col s12 m6">
+                <div id="pi-car-card" class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">Pi Car</span>
+                        <p>I am a very cool car. I can move forward and backward and turn left and right now.
+                            I don't have a name now so I presently use the name "little car".</p>
+                    </div>
+                    <div class="card-action">
+                        <a id="pi-car-a" href="#" class="tooltipped" data-position="bottom" data-delay="50"
+                           data-tooltip="Pi Car is powered off!">Pi Car Control Webview</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12 m6">
+                <div id="proxy-card" class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">IPv6 Proxy</span>
+                        <p>I heard about that Hunnan's v6 is bad. So I perform an IPv6 tunnel at Nanhu that may help you
+                            connect to SS by v6.
+                            I am convenient and fast. Come on get me.</p>
+                    </div>
+                    <div class="card-action">
+                        <a id="proxy-1" href="#" class="tooltipped" data-position="bottom" data-delay="50"
+                           data-tooltip="Status check failed!">US0</a>
+                        <a id="proxy-2" href="#" class="tooltipped" data-position="bottom" data-delay="50"
+                           data-tooltip="Status check failed!">JP0</a>
+                        <a id="proxy-3" href="#" class="tooltipped" data-position="bottom" data-delay="50"
+                           data-tooltip="Status check failed!">JP1</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var ip = undefined;
+        $.ajax({
+            type: "GET",
+            url: "http://linux.cool2645.com/pi/api/getip.php?pwd=raspberry",
+            async: false,
+            success: function (msg) {
+                ip = msg;
+                $("#online-a").attr("data-tooltip", ip);
+                $("#online-a").attr("href", "http://" + ip);
+                $('.tooltipped').tooltip({delay: 50});
+            }
+        });
+        $.ajax({
+            type: "GET",
+            url: "http://"+ ip +"/pi/api/itworks.php",
+            success: function (msg) {
+                if(msg == "itworks") {
+                    $("#online-a").removeClass("red");
+                    $("#online-a").addClass("light-green");
+                    $("#online-a").html("<i id='online-i' class='material-icons left'>&#xE5CA</i>Online");
+                    $('.tooltipped').tooltip({delay: 50});
+                }
+            }
+        });
+        $.ajax({
+            type: "GET",
+            url: "http://"+ ip +"/pi/api/proxy-status.php",
+            success: function (msg) {
+                if(msg == "itworks") {
+                    $("#proxy-card").removeClass("blue-grey");
+                    $("#proxy-card").addClass("teal");
+                    $("#proxy-1").attr("data-tooltip", ip + ":1025");
+                    $("#proxy-2").attr("data-tooltip", ip + ":1026");
+                    $("#proxy-3").attr("data-tooltip", ip + ":1027");
+                    $('.tooltipped').tooltip({delay: 50});
+                }
+            }
+        });
+        $.ajax({
+            type: "GET",
+            url: "http://"+ ip +"/pi/api/picar-status.php",
+            success: function (msg) {
+                if(msg == "on") {
+                    $("#pi-car-card").removeClass("blue-grey");
+                    $("#pi-car-card").addClass("lime");
+                    $("#pi-car-a").attr("data-tooltip", ip + ":2000");
+                    $("#pi-car-a").attr("href", "http://" + ip + ":2000");
+                    $('.tooltipped').tooltip({delay: 50});
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
