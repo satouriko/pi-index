@@ -29,6 +29,128 @@
             margin-top: 40px;
         }
 
+        .l {
+            float: right;
+        }
+
+        .r {
+            float: left;
+        }
+
+        .circle-rty {
+            -webkit-animation: rty 1s forwards;
+            -o-animation: rty 1s forwards;
+            animation: rty 1s forwards;
+        }
+
+        @keyframes rty {
+            0% {
+                transform: rotateY(0deg);
+                -webkit-transform: rotateY(0deg); /* Safari 和 Chrome */
+                -moz-transform: rotateY(0deg); /* Firefox */
+            }
+            50% {
+                transform: rotateY(180deg);
+                -webkit-transform: rotateY(180deg); /* Safari 和 Chrome */
+                -moz-transform: rotateY(180deg); /* Firefox */
+            }
+            100% {
+                transform: rotateY(360deg);
+                -webkit-transform: rotateY(360deg); /* Safari 和 Chrome */
+                -moz-transform: rotateY(360deg); /* Firefox */
+            }
+        }
+
+        @-o-keyframes rty {
+            0% {
+                transform: rotateY(0deg);
+                -webkit-transform: rotateY(0deg); /* Safari 和 Chrome */
+                -moz-transform: rotateY(0deg); /* Firefox */
+            }
+            50% {
+                transform: rotateY(180deg);
+                -webkit-transform: rotateY(180deg); /* Safari 和 Chrome */
+                -moz-transform: rotateY(180deg); /* Firefox */
+            }
+            100% {
+                transform: rotateY(360deg);
+                -webkit-transform: rotateY(360deg); /* Safari 和 Chrome */
+                -moz-transform: rotateY(360deg); /* Firefox */
+            }
+        }
+
+        @-webkit-keyframes rty {
+            0% {
+                transform: rotateY(0deg);
+                -webkit-transform: rotateY(0deg); /* Safari 和 Chrome */
+                -moz-transform: rotateY(0deg); /* Firefox */
+            }
+            50% {
+                transform: rotateY(180deg);
+                -webkit-transform: rotateY(180deg); /* Safari 和 Chrome */
+                -moz-transform: rotateY(180deg); /* Firefox */
+            }
+            100% {
+                transform: rotateY(360deg);
+                -webkit-transform: rotateY(360deg); /* Safari 和 Chrome */
+                -moz-transform: rotateY(360deg); /* Firefox */
+            }
+        }
+
+        .circle-rtz {
+            -webkit-animation: rtz 1s forwards;
+            -o-animation: rtz 1s forwards;
+            animation: rtz 1s forwards;
+        }
+
+        @keyframes rtz {
+            0% {
+                transform: rotateZ(0deg);
+                -webkit-transform: rotateZ(0deg); /* Safari 和 Chrome */
+                -moz-transform: rotateZ(0deg); /* Firefox */
+            }
+            100% {
+                transform: rotateZ(360deg);
+                -webkit-transform: rotateZ(360deg); /* Safari 和 Chrome */
+                -moz-transform: rotateZ(360deg); /* Firefox */
+            }
+        }
+
+        @-o-keyframes rtz {
+            0% {
+                transform: rotateZ(0deg);
+                -webkit-transform: rotateZ(0deg); /* Safari 和 Chrome */
+                -moz-transform: rotateZ(0deg); /* Firefox */
+            }
+            100% {
+                transform: rotateZ(360deg);
+                -webkit-transform: rotateZ(360deg); /* Safari 和 Chrome */
+                -moz-transform: rotateZ(360deg); /* Firefox */
+            }
+        }
+
+        @-webkit-keyframes rtz {
+            0% {
+                transform: rotateZ(0deg);
+                -webkit-transform: rotateZ(0deg); /* Safari 和 Chrome */
+                -moz-transform: rotateZ(0deg); /* Firefox */
+            }
+            100% {
+                transform: rotateZ(360deg);
+                -webkit-transform: rotateZ(360deg); /* Safari 和 Chrome */
+                -moz-transform: rotateZ(360deg); /* Firefox */
+            }
+        }
+
+        .ipv-font {
+            font-size: 24px;
+        }
+
+        .online-btn {
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
     </style>
 
 </head>
@@ -46,9 +168,17 @@
             </div>
         </div>
         <div class="row">
-            <div class="col s6 m4 offset-s3 offset-m4">
-                <a id="online-a" class="waves-effect waves-light btn tooltipped expand red" data-position="top"
+            <div class="col s3 m2 offset-m2">
+                <a id="ipv-button" class="waves-effect waves-light btn-large btn-floating l ipv-font" onclick="chipv()">v4</a>
+            </div>
+            <div class="col s6 m4 v-center">
+                <a id="online-a" class="waves-effect waves-light btn tooltipped expand red online-btn"
+                   data-position="top"
                    data-delay="50" data-tooltip="Cannot connect to Pi!"><i id="online-i" class="material-icons left">&#xE5CD</i>Offline</a>
+            </div>
+            <div class="col s3 m2">
+                <a id="refresh-button" class="waves-effect waves-light btn-large btn-floating r" onclick="refresh()"><i
+                        class="material-icons center">&#xE5D5;</i></a>
             </div>
         </div>
         <div class="row">
@@ -90,58 +220,96 @@
     </div>
 </div>
 <script>
-    $(document).ready(function () {
+    function checkStatus(ipv) {
         var ip = undefined;
         $.ajax({
             type: "GET",
-            url: "http://linux.cool2645.com/pi/api/getip.php?pwd=raspberry",
-            async: false,
+            url: "/pi/api/getip.php?pwd=raspberry&ipv=" + ipv,
             success: function (msg) {
                 ip = msg;
                 $("#online-a").attr("data-tooltip", ip);
                 $("#online-a").attr("href", "http://" + ip);
                 $('.tooltipped').tooltip({delay: 50});
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://" + ip + "/pi/api/itworks.php",
+                    success: function (msg) {
+                        if (msg == "itworks") {
+                            $("#online-a").removeClass("red");
+                            $("#online-a").addClass("light-green");
+                            $("#online-a").html("<i id='online-i' class='material-icons left'>&#xE5CA</i>Online");
+                            $('.tooltipped').tooltip({delay: 50});
+                        }
+                    }
+                });
+                $.ajax({
+                    type: "GET",
+                    url: "http://" + ip + "/pi/api/proxy-status.php",
+                    success: function (msg) {
+                        if (msg == "itworks") {
+                            $("#proxy-card").removeClass("blue-grey");
+                            $("#proxy-card").addClass("teal");
+                            $("#proxy-1").attr("data-tooltip", ip + ":1025");
+                            $("#proxy-2").attr("data-tooltip", ip + ":1026");
+                            $("#proxy-3").attr("data-tooltip", ip + ":1027");
+                            $('.tooltipped').tooltip({delay: 50});
+                        }
+                    }
+                });
+                $.ajax({
+                    type: "GET",
+                    url: "http://" + ip + "/pi/api/picar-status.php",
+                    success: function (msg) {
+                        if (msg == "on") {
+                            $("#pi-car-card").removeClass("blue-grey");
+                            $("#pi-car-card").addClass("lime");
+                            $("#pi-car-a").attr("data-tooltip", ip + ":2000");
+                            $("#pi-car-a").attr("href", "http://" + ip + ":2000");
+                            $('.tooltipped').tooltip({delay: 50});
+                        }
+                    }
+                });
             }
         });
-        $.ajax({
-            type: "GET",
-            url: "http://"+ ip +"/pi/api/itworks.php",
-            success: function (msg) {
-                if(msg == "itworks") {
-                    $("#online-a").removeClass("red");
-                    $("#online-a").addClass("light-green");
-                    $("#online-a").html("<i id='online-i' class='material-icons left'>&#xE5CA</i>Online");
-                    $('.tooltipped').tooltip({delay: 50});
-                }
-            }
-        });
-        $.ajax({
-            type: "GET",
-            url: "http://"+ ip +"/pi/api/proxy-status.php",
-            success: function (msg) {
-                if(msg == "itworks") {
-                    $("#proxy-card").removeClass("blue-grey");
-                    $("#proxy-card").addClass("teal");
-                    $("#proxy-1").attr("data-tooltip", ip + ":1025");
-                    $("#proxy-2").attr("data-tooltip", ip + ":1026");
-                    $("#proxy-3").attr("data-tooltip", ip + ":1027");
-                    $('.tooltipped').tooltip({delay: 50});
-                }
-            }
-        });
-        $.ajax({
-            type: "GET",
-            url: "http://"+ ip +"/pi/api/picar-status.php",
-            success: function (msg) {
-                if(msg == "on") {
-                    $("#pi-car-card").removeClass("blue-grey");
-                    $("#pi-car-card").addClass("lime");
-                    $("#pi-car-a").attr("data-tooltip", ip + ":2000");
-                    $("#pi-car-a").attr("href", "http://" + ip + ":2000");
-                    $('.tooltipped').tooltip({delay: 50});
-                }
-            }
-        });
+    }
+    function doCheck() {
+        var ipv = $("#ipv-button").text();
+        checkStatus(ipv);
+    }
+    function chipv() {
+        if ($("#ipv-button").text() == "v4") {
+            $("#ipv-button").addClass("circle-rty");
+            setTimeout(function () {
+                $("#ipv-button").text("v6");
+                $("#ipv-button").addClass("pink");
+                doCheck();
+            }, 250);
+            setTimeout(function () {
+                $("#ipv-button").removeClass("circle-rty");
+            }, 1000);
+        }
+        else if ($("#ipv-button").text() == "v6") {
+            $("#ipv-button").addClass("circle-rty");
+            setTimeout(function () {
+                $("#ipv-button").text("v4");
+                $("#ipv-button").removeClass("pink");
+                doCheck();
+            }, 250);
+            setTimeout(function () {
+                $("#ipv-button").removeClass("circle-rty");
+            }, 1000);
+        }
+    }
+    function refresh() {
+        $("#refresh-button").addClass("circle-rtz");
+        setTimeout(function () {
+            $("#refresh-button").removeClass("circle-rtz");
+        }, 1000);
+        doCheck();
+    }
+    $(document).ready(function () {
+        doCheck();
     });
 </script>
 </body>
