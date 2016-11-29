@@ -193,7 +193,7 @@
                             I don't have a name now so I presently use the name "little car".</p>
                     </div>
                     <div class="card-action">
-                        <a id="pi-car-a" href="#" class="tooltipped" data-position="bottom" data-delay="50"
+                        <a id="pi-car-a" class="tooltipped" data-position="bottom" data-delay="50"
                            data-tooltip="Pi Car is powered off!">Pi Car Control Webview</a>
                     </div>
                 </div>
@@ -207,11 +207,11 @@
                             I am convenient and fast. Come on get me.</p>
                     </div>
                     <div class="card-action">
-                        <a id="proxy-1" href="#" class="tooltipped" data-position="bottom" data-delay="50"
+                        <a id="proxy-1" class="tooltipped" data-position="bottom" data-delay="50"
                            data-tooltip="Status check failed!">US0</a>
-                        <a id="proxy-2" href="#" class="tooltipped" data-position="bottom" data-delay="50"
+                        <a id="proxy-2" class="tooltipped" data-position="bottom" data-delay="50"
                            data-tooltip="Status check failed!">JP0</a>
-                        <a id="proxy-3" href="#" class="tooltipped" data-position="bottom" data-delay="50"
+                        <a id="proxy-3" class="tooltipped" data-position="bottom" data-delay="50"
                            data-tooltip="Status check failed!">JP1</a>
                     </div>
                 </div>
@@ -220,7 +220,25 @@
     </div>
 </div>
 <script>
+    function resetStatus() {
+        $("#online-a").attr("data-tooltip", "Cannot connect to Pi!");
+        $("#online-a").removeAttr("href");
+        $("#online-a").removeClass("light-green");
+        $("#online-a").addClass("red");
+        $("#online-a").html("<i id='online-i' class='material-icons left'>&#xE5CD</i>Offline");
+        $("#proxy-card").removeClass("teal");
+        $("#proxy-card").addClass("blue-grey");
+        $("#proxy-1").attr("data-tooltip", "Status check failed!");
+        $("#proxy-2").attr("data-tooltip", "Status check failed!");
+        $("#proxy-3").attr("data-tooltip", "Status check failed!");
+        $("#pi-car-card").removeClass("lime");
+        $("#pi-car-card").addClass("blue-grey");
+        $("#pi-car-a").attr("data-tooltip", "Pi Car is powered off!");
+        $("#pi-car-a").removeAttr("href");
+        $('.tooltipped').tooltip({delay: 50});
+    }
     function checkStatus(ipv) {
+        resetStatus();
         var ip = undefined;
         $.ajax({
             type: "GET",
