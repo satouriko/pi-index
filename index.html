@@ -226,7 +226,10 @@
             type: "GET",
             url: "/pi/api/getip.php?pwd=raspberry&ipv=" + ipv,
             success: function (msg) {
-                ip = msg;
+                if(ipv == "v6")
+				    ip = "[" + msg + "]";
+				else
+				    ip = msg;
                 $("#online-a").attr("data-tooltip", ip);
                 $("#online-a").attr("href", "http://" + ip);
                 $('.tooltipped').tooltip({delay: 50});
