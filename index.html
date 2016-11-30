@@ -238,9 +238,7 @@
         $('.tooltipped').tooltip({delay: 50});
     }
     function checkStatus(ip) {
-        $("#online-a").attr("data-tooltip", ip);
-        $("#online-a").attr("href", "http://" + ip);
-        $('.tooltipped').tooltip({delay: 50});
+        resetStatus();
 
         $.ajax({
             type: "GET",
@@ -285,7 +283,6 @@
     }
     function doCheck() {
         var ipv = $("#ipv-button").text();
-        resetStatus();
         var ip = undefined;
         $.ajax({
             type: "GET",
@@ -295,6 +292,9 @@
                     ip = "[" + msg + "]";
                 else
                     ip = msg;
+                $("#online-a").attr("data-tooltip", ip);
+                $("#online-a").attr("href", "http://" + ip);
+                $('.tooltipped').tooltip({delay: 50});
                 checkStatus(ip);
             }
         });
