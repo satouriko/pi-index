@@ -226,12 +226,12 @@
         $("#online-a").removeClass("light-green");
         $("#online-a").addClass("red");
         $("#online-a").html("<i id='online-i' class='material-icons left'>&#xE5CD</i>Offline");
-        $("#proxy-card").removeClass("teal");
+        $("#proxy-card").removeClass("cyan");
         $("#proxy-card").addClass("blue-grey");
         $("#proxy-1").attr("data-tooltip", "Status check failed!");
         $("#proxy-2").attr("data-tooltip", "Status check failed!");
         $("#proxy-3").attr("data-tooltip", "Status check failed!");
-        $("#pi-car-card").removeClass("lime");
+        $("#pi-car-card").removeClass("deep-orange");
         $("#pi-car-card").addClass("blue-grey");
         $("#pi-car-a").attr("data-tooltip", "Pi Car is powered off!");
         $("#pi-car-a").removeAttr("href");
@@ -270,7 +270,7 @@
                     success: function (msg) {
                         if (msg == "itworks") {
                             $("#proxy-card").removeClass("blue-grey");
-                            $("#proxy-card").addClass("teal");
+                            $("#proxy-card").addClass("cyan");
                             $("#proxy-1").attr("data-tooltip", ip + ":1025");
                             $("#proxy-2").attr("data-tooltip", ip + ":1026");
                             $("#proxy-3").attr("data-tooltip", ip + ":1027");
@@ -284,7 +284,7 @@
                     success: function (msg) {
                         if (msg == "on") {
                             $("#pi-car-card").removeClass("blue-grey");
-                            $("#pi-car-card").addClass("lime");
+                            $("#pi-car-card").addClass("deep-orange");
                             $("#pi-car-a").attr("data-tooltip", ip + ":2000");
                             $("#pi-car-a").attr("href", "http://" + ip + ":2000");
                             $('.tooltipped').tooltip({delay: 50});
