@@ -237,66 +237,67 @@
         $("#pi-car-a").removeAttr("href");
         $('.tooltipped').tooltip({delay: 50});
     }
-    function checkStatus(ipv) {
+    function checkStatus(ip) {
+        $("#online-a").attr("data-tooltip", ip);
+        $("#online-a").attr("href", "http://" + ip);
+        $('.tooltipped').tooltip({delay: 50});
+
+        $.ajax({
+            type: "GET",
+            url: "http://" + ip + "/pi/api/itworks.php",
+            success: function (msg) {
+                if (msg == "itworks") {
+                    $("#online-a").removeClass("red");
+                    $("#online-a").addClass("light-green");
+                    $("#online-a").html("<i id='online-i' class='material-icons left'>&#xE5CA</i>Online");
+                    $('.tooltipped').tooltip({delay: 50});
+                }
+            }
+        });
+        $.ajax({
+            type: "GET",
+            url: "http://" + ip + "/pi/api/proxy-status.php",
+            success: function (msg) {
+                if (msg == "itworks") {
+                    $("#proxy-card").removeClass("blue-grey");
+                    $("#proxy-card").addClass("cyan");
+                    $("#proxy-1").attr("data-tooltip", ip + ":1025");
+                    $("#proxy-2").attr("data-tooltip", ip + ":1026");
+                    $("#proxy-3").attr("data-tooltip", ip + ":1027");
+                    $('.tooltipped').tooltip({delay: 50});
+                }
+            }
+        });
+        $.ajax({
+            type: "GET",
+            url: "http://" + ip + "/pi/api/picar-status.php",
+            success: function (msg) {
+                if (msg == "on") {
+                    $("#pi-car-card").removeClass("blue-grey");
+                    $("#pi-car-card").addClass("deep-orange");
+                    $("#pi-car-a").attr("data-tooltip", ip + ":2000");
+                    $("#pi-car-a").attr("href", "http://" + ip + ":2000");
+                    $('.tooltipped').tooltip({delay: 50});
+                }
+            }
+        });
+
+    }
+    function doCheck() {
+        var ipv = $("#ipv-button").text();
         resetStatus();
         var ip = undefined;
         $.ajax({
             type: "GET",
             url: "/pi/api/getip.php?pwd=raspberry&ipv=" + ipv,
             success: function (msg) {
-                if(ipv == "v6")
-				    ip = "[" + msg + "]";
-				else
-				    ip = msg;
-                $("#online-a").attr("data-tooltip", ip);
-                $("#online-a").attr("href", "http://" + ip);
-                $('.tooltipped').tooltip({delay: 50});
-
-                $.ajax({
-                    type: "GET",
-                    url: "http://" + ip + "/pi/api/itworks.php",
-                    success: function (msg) {
-                        if (msg == "itworks") {
-                            $("#online-a").removeClass("red");
-                            $("#online-a").addClass("light-green");
-                            $("#online-a").html("<i id='online-i' class='material-icons left'>&#xE5CA</i>Online");
-                            $('.tooltipped').tooltip({delay: 50});
-                        }
-                    }
-                });
-                $.ajax({
-                    type: "GET",
-                    url: "http://" + ip + "/pi/api/proxy-status.php",
-                    success: function (msg) {
-                        if (msg == "itworks") {
-                            $("#proxy-card").removeClass("blue-grey");
-                            $("#proxy-card").addClass("cyan");
-                            $("#proxy-1").attr("data-tooltip", ip + ":1025");
-                            $("#proxy-2").attr("data-tooltip", ip + ":1026");
-                            $("#proxy-3").attr("data-tooltip", ip + ":1027");
-                            $('.tooltipped').tooltip({delay: 50});
-                        }
-                    }
-                });
-                $.ajax({
-                    type: "GET",
-                    url: "http://" + ip + "/pi/api/picar-status.php",
-                    success: function (msg) {
-                        if (msg == "on") {
-                            $("#pi-car-card").removeClass("blue-grey");
-                            $("#pi-car-card").addClass("deep-orange");
-                            $("#pi-car-a").attr("data-tooltip", ip + ":2000");
-                            $("#pi-car-a").attr("href", "http://" + ip + ":2000");
-                            $('.tooltipped').tooltip({delay: 50});
-                        }
-                    }
-                });
+                if (ipv == "v6")
+                    ip = "[" + msg + "]";
+                else
+                    ip = msg;
+                checkStatus(ip);
             }
         });
-    }
-    function doCheck() {
-        var ipv = $("#ipv-button").text();
-        checkStatus(ipv);
     }
     function chipv() {
         if ($("#ipv-button").text() == "v4") {
@@ -327,7 +328,7 @@
         setTimeout(function () {
             $("#refresh-button").removeClass("circle-rtz");
         }, 1000);
-        doCheck();
+        checkStatus($("#online-a").attr("data-tooltip"));
     }
     $(document).ready(function () {
         doCheck();
