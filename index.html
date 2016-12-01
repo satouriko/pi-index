@@ -221,11 +221,6 @@
 </div>
 <script>
     function resetStatus() {
-        $("#online-a").attr("data-tooltip", "Cannot connect to Pi!");
-        $("#online-a").removeAttr("href");
-        $("#online-a").removeClass("light-green");
-        $("#online-a").addClass("red");
-        $("#online-a").html("<i id='online-i' class='material-icons left'>&#xE5CD</i>Offline");
         $("#proxy-card").removeClass("cyan");
         $("#proxy-card").addClass("blue-grey");
         $("#proxy-1").attr("data-tooltip", "Status check failed!");
@@ -282,6 +277,11 @@
 
     }
     function doCheck() {
+        $("#online-a").attr("data-tooltip", "Cannot connect to Pi!");
+        $("#online-a").removeAttr("href");
+        $("#online-a").removeClass("light-green");
+        $("#online-a").addClass("red");
+        $("#online-a").html("<i id='online-i' class='material-icons left'>&#xE5CD</i>Offline");
         var ipv = $("#ipv-button").text();
         var ip = undefined;
         $.ajax({
