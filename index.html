@@ -201,7 +201,7 @@
             <div class="col s12 m6">
                 <div id="proxy-card" class="card blue-grey darken-1">
                     <div class="card-content white-text">
-                        <span class="card-title">IPv6 Proxy</span>
+                        <span class="card-title">Haproxy</span>
                         <p>I heard about that Hunnan's v6 is bad. So I perform an IPv6 tunnel at Nanhu that may help you
                             connect to SS by v6.
                             I am convenient and fast. Come on get me.</p>
@@ -216,9 +216,21 @@
                     </div>
                 </div>
             </div>
+            <div class="col s12 m6">
+                <div id="ss-card" class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">SSServer</span>
+                        <p>I heard about that Hunnan's v6 is bad. So I perform an ssserver at Nanhu that may help you
+                            connect to v6 by v4.</p>
+                        <input id="ss-input" disabled>
+                        <div align="middle" id="ss-qr"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+<script type="text/javascript" src="http://cdn.staticfile.org/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
 <script>
     function resetStatus() {
         $("#online-a").removeClass("light-green");
@@ -233,6 +245,10 @@
         $("#pi-car-card").addClass("blue-grey");
         $("#pi-car-a").attr("data-tooltip", "Pi Car is powered off!");
         $("#pi-car-a").removeAttr("href");
+        $("#ss-card").removeClass("pink");
+        $("#ss-card").addClass("blue-grey");
+        $("#ss-input").val("");
+        $("#ss-qr").html("");
         $('.tooltipped').tooltip({delay: 50});
     }
     function checkStatus(ip) {
@@ -274,6 +290,20 @@
                     $("#pi-car-a").attr("data-tooltip", ip + ":2000");
                     $("#pi-car-a").attr("href", "http://" + ip + ":2000");
                     $('.tooltipped').tooltip({delay: 50});
+                }
+            }
+        });
+        $.ajax({
+            type: "GET",
+            url: "http://" + ip + "/pi/api/ss-status.php",
+            success: function (msg) {
+                if (msg == "itworks") {
+                    $("#ss-card").removeClass("blue-grey");
+                    $("#ss-card").addClass("pink");
+                    $("#ss-input").val("ss://" + btoa("aes-128-cfb:cool2645@" + ip + ":8388"));
+                    jQuery('#ss-qr').qrcode({
+                        "text": "ss://" + btoa("aes-128-cfb:cool2645@" + ip + ":8388")
+                    });
                 }
             }
         });
